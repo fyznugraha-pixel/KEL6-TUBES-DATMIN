@@ -40,6 +40,46 @@ label_prediksi = {
     "Enrolled": "Masih Aktif Kuliah"
 }
 
+prediction_descriptions = {
+    "Lulus": {
+        "title": "Mahasiswa Diprediksi Berpotensi Lulus",
+        "text": (
+            "Berdasarkan pola data yang dimasukkan, mahasiswa memiliki kecenderungan akademik "
+            "yang mendekati kategori Lulus. Hal ini dapat dipengaruhi oleh nilai akademik, "
+            "jumlah mata kuliah yang berhasil diselesaikan, serta status pembayaran yang mendukung "
+            "kelanjutan studi."
+        ),
+        "recommendation": (
+            "Mahasiswa tetap perlu menjaga konsistensi nilai dan progres akademik agar peluang "
+            "menyelesaikan studi tetap tinggi."
+        )
+    },
+    "Putus Studi": {
+        "title": "Mahasiswa Diprediksi Berisiko Putus Studi",
+        "text": (
+            "Berdasarkan pola data yang dimasukkan, mahasiswa memiliki kecenderungan yang mendekati "
+            "kategori Putus Studi. Kondisi ini dapat berkaitan dengan rendahnya jumlah mata kuliah "
+            "yang lulus, nilai akademik yang belum stabil, atau faktor pembayaran yang belum sesuai."
+        ),
+        "recommendation": (
+            "Mahasiswa disarankan mendapatkan perhatian lebih, seperti evaluasi akademik, bimbingan, "
+            "atau pendampingan agar risiko putus studi dapat dikurangi."
+        )
+    },
+    "Masih Aktif Kuliah": {
+        "title": "Mahasiswa Diprediksi Masih Aktif Kuliah",
+        "text": (
+            "Berdasarkan pola data yang dimasukkan, mahasiswa belum menunjukkan kecenderungan kuat "
+            "ke arah Lulus maupun Putus Studi. Model membaca bahwa mahasiswa masih berada pada kondisi "
+            "aktif menjalani proses perkuliahan."
+        ),
+        "recommendation": (
+            "Mahasiswa perlu tetap memantau perkembangan akademik, terutama jumlah mata kuliah yang "
+            "diambil, jumlah mata kuliah yang lulus, dan nilai rata-rata semester berikutnya."
+        )
+    }
+}
+
 feature_rows = []
 
 for index, feature in enumerate(loaded_features):
@@ -1337,6 +1377,21 @@ BASE_STYLE = """
             padding: 11px 12px;
             font-size: 13px;
         }
+        .result-insight .desc-title {
+            display: block;
+            margin-top: 8px;
+            margin-bottom: 8px;
+            color: var(--navy);
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .result-insight p {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
     }
 
     @media (max-width: 480px) {
@@ -1582,9 +1637,10 @@ FORM_TEMPLATE = """
                                 </div>
 
                                 <div class="result-insight">
-                                    <strong>Insight singkat:</strong><br>
-                                    Grafik di samping menunjukkan distribusi probabilitas dari ketiga kelas.
-                                    Semakin besar persentase pada satu kelas, semakin tinggi keyakinan model terhadap hasil prediksi tersebut.
+                                    <strong>Deskripsi Prediksi:</strong><br>
+                                    <span class="desc-title">{{ prediction_description.title }}</span>
+                                    <p>{{ prediction_description.text }}</p>
+                                    <p><b>Rekomendasi:</b> {{ prediction_description.recommendation }}</p>
                                 </div>
                             </div>
 
@@ -1595,19 +1651,6 @@ FORM_TEMPLATE = """
                                 </div>
                             </div>
 
-                        </div>
-
-                        <div class="input-summary">
-                            <h3>Data Input yang Digunakan</h3>
-
-                            <div class="input-summary-grid">
-                                {% for item in input_summary %}
-                                <div class="input-summary-item">
-                                    <span>{{ item.label }}</span>
-                                    <strong>{{ item.value }}</strong>
-                                </div>
-                                {% endfor %}
-                            </div>
                         </div>
                     </div>
 
@@ -1935,6 +1978,7 @@ def home():
         score_input_features=score_input_features,
         prediction=None,
         probabilities=None,
+        prediction_description=None,
         input_summary=[],
         submitted_values={},
         error=None
@@ -1978,6 +2022,11 @@ def predict():
 
         prediction_asli = loaded_model.predict(input_df)[0]
         prediction = label_prediksi.get(prediction_asli, prediction_asli)
+        prediction_description = prediction_descriptions.get(prediction, {
+            "title": "Deskripsi Prediksi",
+            "text": "Deskripsi belum tersedia untuk hasil prediksi ini.",
+            "recommendation": "Silakan cek kembali data input yang digunakan."
+        })
 
         proba = loaded_model.predict_proba(input_df)[0]
 
@@ -1994,6 +2043,7 @@ def predict():
             score_input_features=score_input_features,
             prediction=prediction,
             probabilities=probabilities,
+            prediction_description=prediction_description,
             input_summary=input_summary,
             submitted_values=submitted_values,
             error=None
