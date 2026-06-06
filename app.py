@@ -40,45 +40,67 @@ label_prediksi = {
     "Enrolled": "Masih Aktif Kuliah"
 }
 
-prediction_descriptions = {
-    "Lulus": {
-        "title": "Mahasiswa Diprediksi Berpotensi Lulus",
-        "text": (
-            "Berdasarkan pola data yang dimasukkan, mahasiswa memiliki kecenderungan akademik "
-            "yang mendekati kategori Lulus. Hal ini dapat dipengaruhi oleh nilai akademik, "
-            "jumlah mata kuliah yang berhasil diselesaikan, serta status pembayaran yang mendukung "
-            "kelanjutan studi."
-        ),
-        "recommendation": (
-            "Mahasiswa tetap perlu menjaga konsistensi nilai dan progres akademik agar peluang "
-            "menyelesaikan studi tetap tinggi."
-        )
-    },
-    "Putus Studi": {
-        "title": "Mahasiswa Diprediksi Berisiko Putus Studi",
-        "text": (
-            "Berdasarkan pola data yang dimasukkan, mahasiswa memiliki kecenderungan yang mendekati "
-            "kategori Putus Studi. Kondisi ini dapat berkaitan dengan rendahnya jumlah mata kuliah "
-            "yang lulus, nilai akademik yang belum stabil, atau faktor pembayaran yang belum sesuai."
-        ),
-        "recommendation": (
-            "Mahasiswa disarankan mendapatkan perhatian lebih, seperti evaluasi akademik, bimbingan, "
-            "atau pendampingan agar risiko putus studi dapat dikurangi."
-        )
-    },
-    "Masih Aktif Kuliah": {
-        "title": "Mahasiswa Diprediksi Masih Aktif Kuliah",
-        "text": (
-            "Berdasarkan pola data yang dimasukkan, mahasiswa belum menunjukkan kecenderungan kuat "
-            "ke arah Lulus maupun Putus Studi. Model membaca bahwa mahasiswa masih berada pada kondisi "
-            "aktif menjalani proses perkuliahan."
-        ),
-        "recommendation": (
-            "Mahasiswa perlu tetap memantau perkembangan akademik, terutama jumlah mata kuliah yang "
-            "diambil, jumlah mata kuliah yang lulus, dan nilai rata-rata semester berikutnya."
-        )
+def get_prediction_description(prediction, probabilities):
+    confidence = probabilities.get(prediction, 0)
+
+    if confidence >= 75:
+        confidence_level = "tinggi"
+    elif confidence >= 50:
+        confidence_level = "sedang"
+    else:
+        confidence_level = "rendah"
+
+    if prediction == "Lulus":
+        return {
+            "title": f"Mahasiswa Berpotensi {confidence}% untuk Lulus",
+            "text": (
+                f"Hasil prediksi mengarah ke kategori Lulus dengan tingkat keyakinan {confidence_level}. "
+                "Artinya, berdasarkan pola data akademik yang dimasukkan, mahasiswa memiliki peluang yang baik "
+                "untuk menyelesaikan studi. Hasil ini dapat dipengaruhi oleh performa akademik, jumlah mata kuliah "
+                "yang berhasil diselesaikan, serta kondisi pendukung seperti pembayaran UKT."
+            ),
+            "recommendation": (
+                "Mahasiswa dapat diarahkan untuk tetap menjaga konsistensi nilai, mempertahankan jumlah mata kuliah "
+                "yang lulus, dan meningkatkan progres akademik agar peluang kelulusan semakin kuat."
+            )
+        }
+
+    if prediction == "Putus Studi":
+        return {
+            "title": f"Mahasiswa Berisiko {confidence}% Mengalami Putus Studi",
+            "text": (
+                f"Hasil prediksi mengarah ke kategori Putus Studi dengan tingkat keyakinan {confidence_level}. "
+                "Artinya, data yang dimasukkan menunjukkan pola yang perlu diperhatikan, seperti kemungkinan "
+                "rendahnya capaian akademik, jumlah mata kuliah yang lulus belum optimal, atau adanya faktor "
+                "pendukung studi yang belum stabil."
+            ),
+            "recommendation": (
+                "Mahasiswa sebaiknya mendapatkan pendampingan lebih lanjut, seperti evaluasi akademik, konsultasi "
+                "dengan dosen wali, bimbingan belajar, atau pengecekan kendala administrasi agar risiko putus studi "
+                "dapat dikurangi."
+            )
+        }
+
+    if prediction == "Masih Aktif Kuliah":
+        return {
+            "title": f"Mahasiswa Berpotensi {confidence}% Masih Aktif Kuliah",
+            "text": (
+                f"Hasil prediksi mengarah ke kategori Masih Aktif Kuliah dengan tingkat keyakinan {confidence_level}. "
+                "Artinya, mahasiswa belum menunjukkan kecenderungan yang sangat kuat ke arah Lulus maupun Putus Studi, "
+                "dan masih berada pada kondisi aktif menjalani proses perkuliahan."
+            ),
+            "recommendation": (
+                "Mahasiswa dapat diarahkan untuk meningkatkan progres akademik, terutama pada jumlah mata kuliah yang "
+                "lulus dan nilai rata-rata semester, agar status akademiknya semakin stabil dan peluang kelulusan "
+                "menjadi lebih kuat."
+            )
+        }
+
+    return {
+        "title": "Deskripsi Prediksi",
+        "text": "Deskripsi belum tersedia untuk hasil prediksi ini.",
+        "recommendation": "Silakan cek kembali data input yang digunakan."
     }
-}
 
 feature_rows = []
 
@@ -674,6 +696,31 @@ BASE_STYLE = """
 
     .result-insight strong {
         color: var(--navy);
+    }
+
+    .result-insight .desc-title {
+        display: block;
+        margin-top: 8px;
+        margin-bottom: 8px;
+        color: var(--navy);
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    .result-insight p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .result-insight .model-note {
+        margin-top: 12px;
+        padding-top: 10px;
+        border-top: 1px solid #e2e8f0;
+        color: #64748b;
+        font-size: 12px;
+        line-height: 1.6;
     }
 
     .input-summary {
@@ -1638,9 +1685,17 @@ FORM_TEMPLATE = """
 
                                 <div class="result-insight">
                                     <strong>Deskripsi Prediksi:</strong><br>
+
                                     <span class="desc-title">{{ prediction_description.title }}</span>
+
                                     <p>{{ prediction_description.text }}</p>
-                                    <p><b>Rekomendasi:</b> {{ prediction_description.recommendation }}</p>
+
+                                    <p><b>Arahan:</b> {{ prediction_description.recommendation }}</p>
+
+                                    <p class="model-note">
+                                        Note: persentase ini berasal dari probabilitas model terhadap kelas prediksi tertinggi,
+                                        bukan nilai akhir mutlak mahasiswa.
+                                    </p>
                                 </div>
                             </div>
 
@@ -1954,7 +2009,7 @@ VISUALISASI_TEMPLATE = """
             </div>
 
             <div class="footer-note">
-                Catatan: visualisasi pada halaman ini diambil dari output notebook Colab.
+                Note: visualisasi pada halaman ini diambil dari output notebook Colab.
                 Grafik yang terlalu banyak atau kurang relevan tidak ditampilkan agar dashboard lebih fokus dan mudah dipahami saat presentasi.
             </div>
 
@@ -2022,11 +2077,6 @@ def predict():
 
         prediction_asli = loaded_model.predict(input_df)[0]
         prediction = label_prediksi.get(prediction_asli, prediction_asli)
-        prediction_description = prediction_descriptions.get(prediction, {
-            "title": "Deskripsi Prediksi",
-            "text": "Deskripsi belum tersedia untuk hasil prediksi ini.",
-            "recommendation": "Silakan cek kembali data input yang digunakan."
-        })
 
         proba = loaded_model.predict_proba(input_df)[0]
 
@@ -2034,6 +2084,8 @@ def predict():
             label_prediksi.get(loaded_model.classes_[i], loaded_model.classes_[i]): round(float(proba[i]) * 100, 2)
             for i in range(len(loaded_model.classes_))
         }
+
+        prediction_description = get_prediction_description(prediction, probabilities)
 
         return render_template_string(
             FORM_TEMPLATE,
@@ -2058,6 +2110,7 @@ def predict():
             score_input_features=score_input_features,
             prediction=None,
             probabilities=None,
+            prediction_description=None,
             input_summary=[],
             submitted_values=dict(request.form),
             error=f"Terjadi error saat melakukan prediksi: {e}"
