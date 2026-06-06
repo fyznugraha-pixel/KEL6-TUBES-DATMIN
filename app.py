@@ -482,6 +482,98 @@ BASE_STYLE = """
         text-align: right;
     }
 
+    .result-layout {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 22px;
+        align-items: center;
+        margin-top: 18px;
+    }
+
+    .result-summary {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .result-chart-box {
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid #dbeafe;
+        border-radius: 20px;
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .result-chart-box h3 {
+        margin: 0 0 14px;
+        color: var(--navy);
+        font-size: 16px;
+    }
+
+    .result-chart-wrap {
+        width: 100%;
+        max-width: 260px;
+        margin: auto;
+    }
+
+    .result-insight {
+        margin-top: 14px;
+        padding: 14px 16px;
+        border-radius: 16px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .result-insight strong {
+        color: var(--navy);
+    }
+
+    .input-summary {
+        margin-top: 22px;
+        padding: 18px;
+        border-radius: 18px;
+        background: rgba(248, 250, 252, 0.92);
+        border: 1px solid #e2e8f0;
+    }
+
+    .input-summary h3 {
+        margin: 0 0 14px;
+        color: var(--navy);
+        font-size: 17px;
+    }
+
+    .input-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .input-summary-item {
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: white;
+        border: 1px solid #e2e8f0;
+    }
+
+    .input-summary-item span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .input-summary-item strong {
+        color: var(--navy);
+        font-size: 14px;
+    }
+
     .error {
         margin-top: 25px;
         padding: 16px;
@@ -576,7 +668,7 @@ BASE_STYLE = """
         font-size: 13px;
         line-height: 1.5;
     }
-    
+
     .custom-select {
         position: relative;
         width: 100%;
@@ -760,67 +852,17 @@ BASE_STYLE = """
         .summary-grid {
             grid-template-columns: 1fr;
         }
-        
+
         .result-layout {
-            display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            gap: 22px;
-            align-items: center;
-            margin-top: 18px;
-        }
-
-        .result-summary {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .result-chart-box {
-            background: rgba(255, 255, 255, 0.72);
-            border: 1px solid #dbeafe;
-            border-radius: 20px;
-            padding: 18px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .result-chart-box h3 {
-            margin: 0 0 14px;
-            color: var(--navy);
-            font-size: 16px;
+            grid-template-columns: 1fr;
         }
 
         .result-chart-wrap {
-            width: 100%;
-            max-width: 250px;
-            margin: auto;
+            max-width: 210px;
         }
 
-        .result-insight {
-            margin-top: 14px;
-            padding: 14px 16px;
-            border-radius: 16px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            color: var(--muted);
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
-        .result-insight strong {
-            color: var(--navy);
-        }
-
-        @media (max-width: 768px) {
-            .result-layout {
-                grid-template-columns: 1fr;
-            }
-
-            .result-chart-wrap {
-                max-width: 210px;
-            }
+        .input-summary-grid {
+            grid-template-columns: 1fr;
         }
     }
 </style>
@@ -855,66 +897,6 @@ FORM_TEMPLATE = """
     """ + BASE_STYLE + """
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const customSelects = document.querySelectorAll("[data-select]");
-
-        customSelects.forEach(function (selectBox) {
-            const trigger = selectBox.querySelector(".custom-select-trigger");
-            const selectedText = selectBox.querySelector(".selected-text");
-            const hiddenInput = selectBox.querySelector(".custom-select-value");
-            const options = selectBox.querySelectorAll(".custom-option");
-
-            trigger.addEventListener("click", function () {
-                customSelects.forEach(function (otherSelect) {
-                    if (otherSelect !== selectBox) {
-                        otherSelect.classList.remove("open");
-                    }
-                });
-
-                selectBox.classList.toggle("open");
-            });
-
-            options.forEach(function (option) {
-                option.addEventListener("click", function () {
-                    const value = option.getAttribute("data-value");
-                    const label = option.getAttribute("data-label");
-
-                    hiddenInput.value = value;
-
-                    selectedText.innerHTML = `
-                        <span>${value === "1" ? "✅" : "⚠️"}</span>
-                        <span>${label}</span>
-                    `;
-
-                    selectBox.classList.remove("open");
-                    selectBox.classList.remove("error");
-                });
-            });
-        });
-
-        document.addEventListener("click", function (event) {
-            customSelects.forEach(function (selectBox) {
-                if (!selectBox.contains(event.target)) {
-                    selectBox.classList.remove("open");
-                }
-            });
-        });
-
-        const form = document.querySelector("form");
-
-        form.addEventListener("submit", function (event) {
-            const customSelect = document.querySelector("[data-select]");
-            const hiddenInput = customSelect.querySelector(".custom-select-value");
-
-            if (!hiddenInput.value) {
-                event.preventDefault();
-                customSelect.classList.add("error");
-                alert("Status pembayaran UKT harus dipilih dulu.");
-            }
-        });
-    });
-</script>
 
 <body>
     """ + NAVBAR + """
@@ -971,41 +953,53 @@ FORM_TEMPLATE = """
                             <label for="{{ item.input_name }}">{{ item.label }}</label>
 
                             {% if item.feature == "Tuition fees up to date" %}
-                                <div class="custom-select" data-select>
-                                    <input
-                                        type="hidden"
-                                        id="{{ item.input_name }}"
-                                        name="{{ item.input_name }}"
-                                        class="custom-select-value">
+                            {% set selected_val = submitted_values.get(item.input_name, '') %}
 
-                                    <button type="button" class="custom-select-trigger">
-                                        <span class="selected-text">
-                                            <span>💳</span>
-                                            <span>Pilih status pembayaran</span>
-                                        </span>
-                                        <span class="arrow">⌄</span>
-                                    </button>
-
-                                    <div class="custom-select-menu">
-                                        <button type="button" class="custom-option option-paid" data-value="1" data-label="Sudah Bayar">
-                                            <span class="option-icon">✓</span>
-                                            <span>Sudah Bayar</span>
-                                        </button>
-
-                                        <button type="button" class="custom-option option-unpaid" data-value="0" data-label="Belum Bayar">
-                                            <span class="option-icon">!</span>
-                                            <span>Belum Bayar</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            {% else %}
+                            <div class="custom-select" data-select>
                                 <input
-                                    type="number"
-                                    step="any"
+                                    type="hidden"
                                     id="{{ item.input_name }}"
                                     name="{{ item.input_name }}"
-                                    placeholder="Masukkan nilai"
-                                    required>
+                                    class="custom-select-value"
+                                    value="{{ selected_val }}">
+
+                                <button type="button" class="custom-select-trigger">
+                                    <span class="selected-text">
+                                        {% if selected_val == "1" %}
+                                            <span>✅</span>
+                                            <span>Sudah Bayar</span>
+                                        {% elif selected_val == "0" %}
+                                            <span>⚠️</span>
+                                            <span>Belum Bayar</span>
+                                        {% else %}
+                                            <span>💳</span>
+                                            <span>Pilih status pembayaran</span>
+                                        {% endif %}
+                                    </span>
+                                    <span class="arrow">⌄</span>
+                                </button>
+
+                                <div class="custom-select-menu">
+                                    <button type="button" class="custom-option option-paid" data-value="1" data-label="Sudah Bayar">
+                                        <span class="option-icon">✓</span>
+                                        <span>Sudah Bayar</span>
+                                    </button>
+
+                                    <button type="button" class="custom-option option-unpaid" data-value="0" data-label="Belum Bayar">
+                                        <span class="option-icon">!</span>
+                                        <span>Belum Bayar</span>
+                                    </button>
+                                </div>
+                            </div>
+                            {% else %}
+                            <input
+                                type="number"
+                                step="any"
+                                id="{{ item.input_name }}"
+                                name="{{ item.input_name }}"
+                                placeholder="Masukkan nilai"
+                                value="{{ submitted_values.get(item.input_name, '') }}"
+                                required>
                             {% endif %}
                         </div>
                         {% endfor %}
@@ -1054,6 +1048,19 @@ FORM_TEMPLATE = """
                             </div>
 
                         </div>
+
+                        <div class="input-summary">
+                            <h3>Data Input yang Digunakan</h3>
+
+                            <div class="input-summary-grid">
+                                {% for item in input_summary %}
+                                <div class="input-summary-item">
+                                    <span>{{ item.label }}</span>
+                                    <strong>{{ item.value }}</strong>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
 
                     <script>
@@ -1075,9 +1082,9 @@ FORM_TEMPLATE = """
                                             {% endfor %}
                                         ],
                                         backgroundColor: [
-                                            '#2563eb',
+                                            '#ef4444',
                                             '#f59e0b',
-                                            '#ef4444'
+                                            '#2563eb'
                                         ],
                                         borderWidth: 0,
                                         hoverOffset: 8
@@ -1110,6 +1117,12 @@ FORM_TEMPLATE = """
                             });
                         }
                     </script>
+                    {% endif %}
+
+                    {% if error %}
+                    <div class="error">
+                        {{ error }}
+                    </div>
                     {% endif %}
 
                     <div class="footer-note">
@@ -1151,6 +1164,72 @@ FORM_TEMPLATE = """
 
         </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const customSelects = document.querySelectorAll("[data-select]");
+
+            customSelects.forEach(function (selectBox) {
+                const trigger = selectBox.querySelector(".custom-select-trigger");
+                const selectedText = selectBox.querySelector(".selected-text");
+                const hiddenInput = selectBox.querySelector(".custom-select-value");
+                const options = selectBox.querySelectorAll(".custom-option");
+
+                trigger.addEventListener("click", function () {
+                    customSelects.forEach(function (otherSelect) {
+                        if (otherSelect !== selectBox) {
+                            otherSelect.classList.remove("open");
+                        }
+                    });
+
+                    selectBox.classList.toggle("open");
+                });
+
+                options.forEach(function (option) {
+                    option.addEventListener("click", function () {
+                        const value = option.getAttribute("data-value");
+                        const label = option.getAttribute("data-label");
+
+                        hiddenInput.value = value;
+
+                        selectedText.innerHTML = `
+                            <span>${value === "1" ? "✅" : "⚠️"}</span>
+                            <span>${label}</span>
+                        `;
+
+                        selectBox.classList.remove("open");
+                        selectBox.classList.remove("error");
+                    });
+                });
+            });
+
+            document.addEventListener("click", function (event) {
+                customSelects.forEach(function (selectBox) {
+                    if (!selectBox.contains(event.target)) {
+                        selectBox.classList.remove("open");
+                    }
+                });
+            });
+
+            const form = document.querySelector("form");
+
+            form.addEventListener("submit", function (event) {
+                const customSelect = document.querySelector("[data-select]");
+
+                if (!customSelect) {
+                    return;
+                }
+
+                const hiddenInput = customSelect.querySelector(".custom-select-value");
+
+                if (!hiddenInput.value) {
+                    event.preventDefault();
+                    customSelect.classList.add("error");
+                    alert("Status pembayaran UKT harus dipilih dulu.");
+                }
+            });
+        });
+    </script>
 </body>
 </html>
 """
@@ -1166,98 +1245,6 @@ VISUALISASI_TEMPLATE = """
     <meta charset="UTF-8">
     <title>Visualisasi Data Mining</title>
     """ + BASE_STYLE + """
-
-    <style>
-        .visual-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 24px;
-            margin-top: 24px;
-        }
-
-        .visual-card {
-            background: white;
-            border-radius: 22px;
-            padding: 22px;
-            box-shadow: 0 12px 35px rgba(15, 23, 42, 0.10);
-            border: 1px solid #e2e8f0;
-        }
-
-        .visual-card.full {
-            grid-column: 1 / -1;
-        }
-
-        .visual-card h3 {
-            margin: 0 0 8px;
-            color: #123c69;
-            font-size: 18px;
-        }
-
-        .visual-card p {
-            margin: 0 0 16px;
-            color: #64748b;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .visual-card img {
-            width: 100%;
-            border-radius: 14px;
-            border: 1px solid #e2e8f0;
-            background: #f8fafc;
-        }
-
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 18px;
-            margin-top: 24px;
-        }
-
-        .summary-card {
-            background: white;
-            padding: 22px;
-            border-radius: 20px;
-            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
-            border: 1px solid #e2e8f0;
-        }
-
-        .summary-card h3 {
-            margin: 0 0 8px;
-            color: #123c69;
-            font-size: 15px;
-        }
-
-        .summary-card .value {
-            margin: 0;
-            color: #2563eb;
-            font-size: 30px;
-            font-weight: 800;
-        }
-
-        .summary-card .desc {
-            margin: 6px 0 0;
-            color: #64748b;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        @media (max-width: 900px) {
-            .summary-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-
-            .visual-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .summary-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -1393,6 +1380,8 @@ def home():
         total_features=len(loaded_features),
         prediction=None,
         probabilities=None,
+        input_summary=[],
+        submitted_values={},
         error=None
     )
 
@@ -1404,10 +1393,28 @@ def home():
 def predict():
     try:
         input_values = []
+        submitted_values = {}
+        input_summary = []
 
         for item in feature_rows:
-            value = float(request.form[item["input_name"]])
+            raw_value = request.form[item["input_name"]]
+            submitted_values[item["input_name"]] = raw_value
+
+            value = float(raw_value)
             input_values.append(value)
+
+            display_value = raw_value
+
+            if item["feature"] == "Tuition fees up to date":
+                if raw_value == "1":
+                    display_value = "Sudah Bayar"
+                elif raw_value == "0":
+                    display_value = "Belum Bayar"
+
+            input_summary.append({
+                "label": item["label"],
+                "value": display_value
+            })
 
         input_df = pd.DataFrame([input_values], columns=loaded_features)
 
@@ -1428,6 +1435,8 @@ def predict():
             total_features=len(loaded_features),
             prediction=prediction,
             probabilities=probabilities,
+            input_summary=input_summary,
+            submitted_values=submitted_values,
             error=None
         )
 
@@ -1439,6 +1448,8 @@ def predict():
             total_features=len(loaded_features),
             prediction=None,
             probabilities=None,
+            input_summary=[],
+            submitted_values=dict(request.form),
             error=f"Terjadi error saat melakukan prediksi: {e}"
         )
 
