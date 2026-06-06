@@ -22,16 +22,16 @@ app = Flask(__name__)
 # =====================================================
 
 label_indonesia = {
-    "Admission grade": "Nilai Seleksi Masuk Kampus",
-    "Previous qualification (grade)": "Nilai Pendidikan Sebelumnya / Nilai Sekolah",
+    "Admission grade": "Nilai Seleksi Masuk Kampus (0-100)",
+    "Previous qualification (grade)": "Nilai Pendidikan Sebelumnya / Nilai Sekolah (0-100)",
     "Age at enrollment": "Usia Saat Masuk Kuliah",
     "Tuition fees up to date": "Status Pembayaran UKT",
     "Curricular units 1st sem (enrolled)": "Jumlah Mata Kuliah Diambil Semester 1",
     "Curricular units 1st sem (approved)": "Jumlah Mata Kuliah Lulus Semester 1",
-    "Curricular units 1st sem (grade)": "Nilai Rata-rata Semester 1",
+    "Curricular units 1st sem (grade)": "Nilai Rata-rata Semester 1 (0-100)",
     "Curricular units 2nd sem (enrolled)": "Jumlah Mata Kuliah Diambil Semester 2",
     "Curricular units 2nd sem (approved)": "Jumlah Mata Kuliah Lulus Semester 2",
-    "Curricular units 2nd sem (grade)": "Nilai Rata-rata Semester 2"
+    "Curricular units 2nd sem (grade)": "Nilai Rata-rata Semester 2 (0-100)"
 }
 
 label_prediksi = {
@@ -248,6 +248,72 @@ BASE_STYLE = """
         font-size: 13px;
         font-weight: 800;
         border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+
+    .ui-icon {
+        width: 18px;
+        height: 18px;
+        display: inline-block;
+        flex-shrink: 0;
+        stroke-width: 2.2;
+    }
+
+    .tag-dot,
+    .badge-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: #60a5fa;
+        box-shadow: 0 0 0 5px rgba(96, 165, 250, 0.18);
+        flex-shrink: 0;
+    }
+
+    .badge-dot {
+        background: white;
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18);
+    }
+
+    .status-icon {
+        width: 24px;
+        height: 24px;
+        border-radius: 9px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .status-icon .ui-icon {
+        width: 15px;
+        height: 15px;
+    }
+
+    .status-paid-icon {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+
+    .status-unpaid-icon {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .status-neutral-icon {
+        background: #dbeafe;
+        color: #2563eb;
+    }
+
+    .chevron-icon {
+        width: 17px;
+        height: 17px;
+        color: #64748b;
+        transition: 0.2s ease;
+    }
+
+    .info-icon .ui-icon {
+        width: 21px;
+        height: 21px;
     }
 
     h1 {
@@ -751,7 +817,9 @@ BASE_STYLE = """
     }
 
     .custom-select-trigger .arrow {
-        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         transition: 0.2s ease;
     }
 
@@ -808,7 +876,11 @@ BASE_STYLE = """
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 14px;
+    }
+
+    .option-icon .ui-icon {
+        width: 15px;
+        height: 15px;
     }
 
     .option-paid .option-icon {
@@ -1382,7 +1454,7 @@ FORM_TEMPLATE = """
 
             <div class="hero">
                 <div class="hero-content">
-                    <span class="tag">● Dashboard Model </span>
+                    <span class="tag"><span class="tag-dot"></span> Dashboard Model</span>
                     <h1>Prediksi Status Mahasiswa</h1>
                     <p>
                         Sistem ini membantu memprediksi kemungkinan status mahasiswa berdasarkan data akademik
@@ -1441,27 +1513,27 @@ FORM_TEMPLATE = """
                                 <button type="button" class="custom-select-trigger">
                                     <span class="selected-text">
                                         {% if selected_val == "1" %}
-                                            <span>✅</span>
+                                            <span class="status-icon status-paid-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
                                             <span>Sudah Bayar</span>
                                         {% elif selected_val == "0" %}
-                                            <span>⚠️</span>
+                                            <span class="status-icon status-unpaid-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 9v4" stroke="currentColor" stroke-linecap="round"/><path d="M12 17h.01" stroke="currentColor" stroke-linecap="round"/><path d="M10.3 4.3 2.8 17.2A2 2 0 0 0 4.5 20h15a2 2 0 0 0 1.7-2.8L13.7 4.3a2 2 0 0 0-3.4 0Z" stroke="currentColor" stroke-linejoin="round"/></svg></span>
                                             <span>Belum Bayar</span>
                                         {% else %}
-                                            <span>💳</span>
+                                            <span class="status-icon status-neutral-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3" stroke="currentColor"/><path d="M3 10h18" stroke="currentColor"/><path d="M7 15h4" stroke="currentColor" stroke-linecap="round"/></svg></span>
                                             <span>Pilih status pembayaran</span>
                                         {% endif %}
                                     </span>
-                                    <span class="arrow">⌄</span>
+                                    <span class="arrow"><svg class="ui-icon chevron-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
                                 </button>
 
                                 <div class="custom-select-menu">
                                     <button type="button" class="custom-option option-paid" data-value="1" data-label="Sudah Bayar">
-                                        <span class="option-icon">✓</span>
+                                        <span class="option-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
                                         <span>Sudah Bayar</span>
                                     </button>
 
                                     <button type="button" class="custom-option option-unpaid" data-value="0" data-label="Belum Bayar">
-                                        <span class="option-icon">!</span>
+                                        <span class="option-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 9v4" stroke="currentColor" stroke-linecap="round"/><path d="M12 17h.01" stroke="currentColor" stroke-linecap="round"/><path d="M10.3 4.3 2.8 17.2A2 2 0 0 0 4.5 20h15a2 2 0 0 0 1.7-2.8L13.7 4.3a2 2 0 0 0-3.4 0Z" stroke="currentColor" stroke-linejoin="round"/></svg></span>
                                         <span>Belum Bayar</span>
                                     </button>
                                 </div>
@@ -1493,7 +1565,7 @@ FORM_TEMPLATE = """
                         <div class="result-layout">
 
                             <div class="result-summary">
-                                <span class="badge">● {{ prediction }}</span>
+                                <span class="badge"><span class="badge-dot"></span> {{ prediction }}</span>
 
                                 <div class="prob-list">
                                     <h3>Probabilitas Tiap Kelas</h3>
@@ -1610,7 +1682,7 @@ FORM_TEMPLATE = """
 
                 <div class="side-panel">
                     <div class="info-card">
-                        <div class="info-icon">📌</div>
+                        <div class="info-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-5.2 7-12A7 7 0 1 0 5 9c0 6.8 7 12 7 12Z" stroke="currentColor" stroke-linejoin="round"/><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor"/></svg></div>
                         <h3>Tujuan Sistem</h3>
                         <p>
                             Sistem ini dibuat untuk menerapkan proses data mining dari tahap preprocessing,
@@ -1619,7 +1691,7 @@ FORM_TEMPLATE = """
                     </div>
 
                     <div class="info-card">
-                        <div class="info-icon">🎯</div>
+                        <div class="info-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor"/><circle cx="12" cy="12" r="4" stroke="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg></div>
                         <h3>Target Prediksi</h3>
                         <p>
                             Target model terdiri dari tiga kelas: Lulus, Putus Studi, dan Masih Aktif Kuliah.
@@ -1628,7 +1700,7 @@ FORM_TEMPLATE = """
                     </div>
 
                     <div class="info-card">
-                        <div class="info-icon">💡</div>
+                        <div class="info-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 18h6" stroke="currentColor" stroke-linecap="round"/><path d="M10 22h4" stroke="currentColor" stroke-linecap="round"/><path d="M8.5 15.5c-1.5-1.1-2.5-2.9-2.5-5A6 6 0 1 1 16 15.5c-.8.6-1 1.2-1 2H9c0-.8-.2-1.4-.5-2Z" stroke="currentColor" stroke-linejoin="round"/></svg></div>
                         <h3>Tips Input</h3>
                         <p>
                             Untuk UKT pilih “Sudah Bayar” jika pembayaran up to date. Jika belum sesuai,
@@ -1669,8 +1741,11 @@ FORM_TEMPLATE = """
 
                         hiddenInput.value = value;
 
+                        const paidIcon = `<span class="status-icon status-paid-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
+                        const unpaidIcon = `<span class="status-icon status-unpaid-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 9v4" stroke="currentColor" stroke-linecap="round"/><path d="M12 17h.01" stroke="currentColor" stroke-linecap="round"/><path d="M10.3 4.3 2.8 17.2A2 2 0 0 0 4.5 20h15a2 2 0 0 0 1.7-2.8L13.7 4.3a2 2 0 0 0-3.4 0Z" stroke="currentColor" stroke-linejoin="round"/></svg></span>`;
+
                         selectedText.innerHTML = `
-                            <span>${value === "1" ? "✅" : "⚠️"}</span>
+                            ${value === "1" ? paidIcon : unpaidIcon}
                             <span>${label}</span>
                         `;
 
