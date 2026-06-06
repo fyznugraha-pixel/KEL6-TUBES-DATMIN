@@ -865,6 +865,445 @@ BASE_STYLE = """
             grid-template-columns: 1fr;
         }
     }
+
+    /* =====================================================
+       RESPONSIVE MOBILE ENHANCEMENT
+       ===================================================== */
+
+    html {
+        scroll-behavior: smooth;
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    img,
+    canvas {
+        max-width: 100%;
+    }
+
+    @media (max-width: 1024px) {
+        .container {
+            max-width: 100%;
+        }
+
+        .layout-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .side-panel {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .visual-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .visual-card.full {
+            grid-column: auto;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .navbar {
+            position: sticky;
+            top: 0;
+        }
+
+        .nav-inner {
+            padding: 12px 14px;
+            gap: 12px;
+            align-items: stretch;
+        }
+
+        .brand {
+            justify-content: center;
+            font-size: 15px;
+        }
+
+        .brand-mark {
+            width: 30px;
+            height: 30px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .nav-links {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px;
+            padding: 5px;
+        }
+
+        .nav-links a {
+            text-align: center;
+            padding: 10px 8px;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .page {
+            padding: 20px 12px 42px;
+        }
+
+        .hero {
+            padding: 24px;
+            border-radius: 24px;
+            margin-bottom: 18px;
+        }
+
+        .hero::after {
+            width: 180px;
+            height: 180px;
+            right: -70px;
+            top: -70px;
+        }
+
+        .tag {
+            font-size: 11px;
+            padding: 7px 11px;
+            margin-bottom: 14px;
+        }
+
+        h1 {
+            font-size: 30px;
+            line-height: 1.12;
+            letter-spacing: -0.8px;
+        }
+
+        .hero p {
+            font-size: 14px;
+            line-height: 1.65;
+        }
+
+        .mini-stats {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 9px;
+            margin-top: 20px;
+        }
+
+        .mini-stat {
+            padding: 12px 10px;
+            border-radius: 15px;
+        }
+
+        .mini-stat strong {
+            font-size: 18px;
+        }
+
+        .mini-stat span {
+            font-size: 10px;
+            line-height: 1.3;
+        }
+
+        .layout-grid {
+            gap: 18px;
+        }
+
+        .card {
+            padding: 20px;
+            border-radius: 22px;
+        }
+
+        .card-title {
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .card-title h2 {
+            font-size: 19px;
+        }
+
+        .card-title p {
+            font-size: 13px;
+        }
+
+        .step-badge {
+            font-size: 11px;
+            padding: 7px 10px;
+        }
+
+        form {
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        label {
+            font-size: 12px;
+            margin-bottom: 7px;
+        }
+
+        input,
+        select,
+        .custom-select-trigger {
+            height: 46px;
+            border-radius: 14px;
+            font-size: 13px;
+        }
+
+        button {
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 14px;
+        }
+
+        .side-panel {
+            grid-template-columns: 1fr;
+        }
+
+        .info-card {
+            padding: 18px;
+            border-radius: 20px;
+        }
+
+        .info-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 13px;
+            font-size: 17px;
+        }
+
+        .info-card h3 {
+            font-size: 15px;
+        }
+
+        .info-card p {
+            font-size: 12.5px;
+        }
+
+        .result {
+            padding: 18px;
+            border-radius: 20px;
+            margin-top: 22px;
+        }
+
+        .result h2 {
+            font-size: 21px;
+        }
+
+        .result p {
+            font-size: 13px;
+        }
+
+        .result-layout {
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+        .badge {
+            width: fit-content;
+            max-width: 100%;
+            font-size: 13px;
+            padding: 10px 14px;
+        }
+
+        .prob-list {
+            margin-top: 16px;
+        }
+
+        .prob-list h3 {
+            font-size: 15px;
+        }
+
+        .prob-item {
+            grid-template-columns: 1fr;
+            gap: 8px;
+            padding: 10px 0;
+        }
+
+        .prob-item span {
+            font-size: 13px;
+        }
+
+        .prob-item strong {
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .bar-track {
+            height: 9px;
+        }
+
+        .result-chart-box {
+            padding: 16px;
+            border-radius: 18px;
+        }
+
+        .result-chart-wrap {
+            max-width: 220px;
+        }
+
+        .result-insight {
+            font-size: 12.5px;
+            padding: 13px;
+        }
+
+        .input-summary {
+            padding: 15px;
+            border-radius: 16px;
+        }
+
+        .input-summary h3 {
+            font-size: 15px;
+        }
+
+        .input-summary-grid {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .input-summary-item {
+            padding: 11px 12px;
+            border-radius: 13px;
+        }
+
+        .input-summary-item span {
+            font-size: 11.5px;
+        }
+
+        .input-summary-item strong {
+            font-size: 13px;
+            word-break: break-word;
+        }
+
+        .footer-note {
+            font-size: 12px;
+            padding: 13px;
+            border-radius: 14px;
+        }
+
+        .summary-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .summary-card {
+            padding: 17px;
+            border-radius: 18px;
+        }
+
+        .summary-card h3 {
+            font-size: 12.5px;
+        }
+
+        .summary-card .value {
+            font-size: 24px;
+        }
+
+        .summary-card .desc {
+            font-size: 11.5px;
+        }
+
+        .visual-grid {
+            gap: 16px;
+            margin-top: 18px;
+        }
+
+        .visual-card {
+            padding: 18px;
+            border-radius: 20px;
+        }
+
+        .visual-card h3 {
+            font-size: 16px;
+        }
+
+        .visual-card p {
+            font-size: 12.5px;
+        }
+
+        .visual-card img {
+            border-radius: 13px;
+        }
+
+        .custom-select-menu {
+            z-index: 100;
+            border-radius: 15px;
+        }
+
+        .custom-option {
+            padding: 11px 12px;
+            font-size: 13px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .page {
+            padding: 16px 10px 34px;
+        }
+
+        .nav-inner {
+            padding: 10px;
+        }
+
+        .brand {
+            font-size: 14px;
+        }
+
+        .nav-links a {
+            font-size: 11.5px;
+            padding: 9px 6px;
+        }
+
+        .hero {
+            padding: 20px;
+            border-radius: 20px;
+        }
+
+        h1 {
+            font-size: 26px;
+        }
+
+        .hero p {
+            font-size: 13px;
+        }
+
+        .mini-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .mini-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card {
+            padding: 16px;
+            border-radius: 19px;
+        }
+
+        .card-title h2 {
+            font-size: 18px;
+        }
+
+        input,
+        select,
+        .custom-select-trigger {
+            height: 44px;
+        }
+
+        .summary-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .result {
+            padding: 16px;
+        }
+
+        .result-chart-wrap {
+            max-width: 190px;
+        }
+
+        .visual-card {
+            padding: 15px;
+        }
+    }
+
 </style>
 """
 
@@ -893,6 +1332,7 @@ FORM_TEMPLATE = """
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prediksi Status Mahasiswa</title>
     """ + BASE_STYLE + """
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -1242,6 +1682,7 @@ VISUALISASI_TEMPLATE = """
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visualisasi Data Mining</title>
     """ + BASE_STYLE + """
 </head>
@@ -1276,7 +1717,7 @@ VISUALISASI_TEMPLATE = """
                 </div>
 
                 <div class="summary-card">
-                    <h3>Akurasi Model Utama</h3>
+                    <h3>Akurasi Model Deployment</h3>
                     <p class="value">75.14%</p>
                     <p class="desc">Akurasi model sederhana yang digunakan pada form prediksi.</p>
                 </div>
