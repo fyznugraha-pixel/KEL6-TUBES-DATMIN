@@ -872,8 +872,8 @@ NAVBAR = """
 <div class="navbar">
     <div class="nav-inner">
         <div class="brand">
-            <div class="brand-mark">D</div>
-            <span>DATMIN KEL 6</span>
+            <span>KELOMPOK</span>
+            <div class="brand-mark">6</div>
         </div>
 
         <div class="nav-links">
@@ -906,7 +906,7 @@ FORM_TEMPLATE = """
 
             <div class="hero">
                 <div class="hero-content">
-                    <span class="tag">● Deployment Model Data Mining</span>
+                    <span class="tag">● Dashboard Model </span>
                     <h1>Prediksi Status Mahasiswa</h1>
                     <p>
                         Sistem ini membantu memprediksi kemungkinan status mahasiswa berdasarkan data akademik
@@ -940,8 +940,7 @@ FORM_TEMPLATE = """
                         <div>
                             <h2>Masukkan Data Mahasiswa</h2>
                             <p>
-                                Isi data sesuai format angka pada dataset. Untuk status pembayaran UKT,
-                                pilih sudah bayar atau belum bayar.
+                                Isi data untuk menghasilkan prediksi status Mahasiswa.
                             </p>
                         </div>
                         <span class="step-badge">Step 1 / Prediksi</span>
@@ -1278,8 +1277,8 @@ VISUALISASI_TEMPLATE = """
 
                 <div class="summary-card">
                     <h3>Akurasi Model Utama</h3>
-                    <p class="value">77,51%</p>
-                    <p class="desc">Akurasi Random Forest pada model utama.</p>
+                    <p class="value">75.14%</p>
+                    <p class="desc">Akurasi model sederhana yang digunakan pada form prediksi.</p>
                 </div>
 
                 <div class="summary-card">
@@ -1294,8 +1293,9 @@ VISUALISASI_TEMPLATE = """
                 <div class="visual-card">
                     <h3>Distribusi Status Mahasiswa</h3>
                     <p>
-                        Grafik ini menunjukkan jumlah data pada setiap status mahasiswa,
-                        yaitu Lulus, Putus Studi, dan Masih Aktif Kuliah.
+                        Grafik ini menunjukkan fitur yang paling berpengaruh pada model utama Random Forest
+                        saat proses analisis. Untuk deployment, sistem menggunakan model sederhana dengan 10 fitur
+                        agar form lebih mudah digunakan.
                     </p>
                     <img src="/static/img/01_distribusi_target.png" alt="Distribusi Target">
                 </div>
