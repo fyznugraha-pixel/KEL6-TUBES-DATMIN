@@ -50,6 +50,42 @@ for index, feature in enumerate(loaded_features):
     })
 
 # =====================================================
+# KONVERSI NILAI INPUT USER KE FORMAT MODEL
+# =====================================================
+
+# Di UI, nilai akademik dibuat skala 0-100 agar lebih familiar untuk user.
+# Namun dataset training punya skala berbeda, jadi sebelum masuk model
+# nilainya dikonversi dulu agar tetap sesuai pola data training.
+
+score_0_100_to_200_features = [
+    "Admission grade",
+    "Previous qualification (grade)"
+]
+
+score_0_100_to_20_features = [
+    "Curricular units 1st sem (grade)",
+    "Curricular units 2nd sem (grade)"
+]
+
+score_input_features = score_0_100_to_200_features + score_0_100_to_20_features
+
+def convert_user_input_to_model_value(feature_name, raw_value):
+    value = float(raw_value)
+
+    # Nilai seleksi masuk dan nilai pendidikan sebelumnya pada dataset
+    # berada di skala sekitar 95-190. User input dibuat 0-100,
+    # lalu dikonversi mendekati skala dataset dengan dikali 2.
+    if feature_name in score_0_100_to_200_features:
+        return value * 2
+
+    # Nilai rata-rata semester pada dataset berada di skala sekitar 0-20.
+    # User input dibuat 0-100, lalu dikonversi dengan dibagi 5.
+    if feature_name in score_0_100_to_20_features:
+        return value / 5
+
+    return value
+
+# =====================================================
 # CSS GLOBAL
 # =====================================================
 
@@ -1436,8 +1472,9 @@ FORM_TEMPLATE = """
                                 step="any"
                                 id="{{ item.input_name }}"
                                 name="{{ item.input_name }}"
-                                placeholder="Masukkan nilai"
+                                placeholder="{% if item.feature in score_input_features %}Masukkan nilai 0-100{% else %}Masukkan nilai{% endif %}"
                                 value="{{ submitted_values.get(item.input_name, '') }}"
+                                {% if item.feature in score_input_features %}min="0" max="100"{% endif %}
                                 required>
                             {% endif %}
                         </div>
@@ -1565,8 +1602,9 @@ FORM_TEMPLATE = """
                     {% endif %}
 
                     <div class="footer-note">
-                        Catatan: nilai input mengikuti format dataset training.
-                        Nilai rata-rata semester menggunakan skala angka yang sama seperti data asli.
+                        Catatan: nilai akademik seperti <b>nilai seleksi masuk</b>, <b>nilai sekolah</b>,
+                        dan <b>nilai rata-rata semester</b> diisi menggunakan skala <b>0-100</b> agar lebih mudah dipahami.
+                        Sistem akan otomatis menyesuaikan nilai tersebut ke skala dataset training sebelum diproses oleh model.
                     </div>
                 </div>
 
@@ -1819,6 +1857,7 @@ def home():
         active_page="form",
         feature_rows=feature_rows,
         total_features=len(loaded_features),
+        score_input_features=score_input_features,
         prediction=None,
         probabilities=None,
         input_summary=[],
@@ -1841,7 +1880,7 @@ def predict():
             raw_value = request.form[item["input_name"]]
             submitted_values[item["input_name"]] = raw_value
 
-            value = float(raw_value)
+            value = convert_user_input_to_model_value(item["feature"], raw_value)
             input_values.append(value)
 
             display_value = raw_value
@@ -1851,6 +1890,9 @@ def predict():
                     display_value = "Sudah Bayar"
                 elif raw_value == "0":
                     display_value = "Belum Bayar"
+
+            if item["feature"] in score_input_features:
+                display_value = f"{raw_value} / 100"
 
             input_summary.append({
                 "label": item["label"],
@@ -1874,6 +1916,7 @@ def predict():
             active_page="form",
             feature_rows=feature_rows,
             total_features=len(loaded_features),
+            score_input_features=score_input_features,
             prediction=prediction,
             probabilities=probabilities,
             input_summary=input_summary,
@@ -1887,6 +1930,7 @@ def predict():
             active_page="form",
             feature_rows=feature_rows,
             total_features=len(loaded_features),
+            score_input_features=score_input_features,
             prediction=None,
             probabilities=None,
             input_summary=[],
